@@ -1,10 +1,11 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function createOrder(listingId: string, userId: string) {
   const supabase = await createClient()
+  const adminSupabase = createAdminClient()
   
   // Validate that the user ID is provided
   if (!userId) {
@@ -12,7 +13,7 @@ export async function createOrder(listingId: string, userId: string) {
   }
 
   // Get the listing details
-  const { data: listing, error: listingError } = await supabase
+  const { data: listing, error: listingError } = await adminSupabase
     .from('listings')
     .select('*')
     .eq('id', listingId)
@@ -29,7 +30,7 @@ export async function createOrder(listingId: string, userId: string) {
   }
 
   // Check if there's already an active order for this listing by this buyer
-  const { data: existingOrder, error: existingError } = await supabase
+  const { data: existingOrder, error: existingError } = await adminSupabase
     .from('orders')
     .select('id')
     .eq('listing_id', listingId)
@@ -42,7 +43,7 @@ export async function createOrder(listingId: string, userId: string) {
   }
 
   // Create the order
-  const { data: order, error: orderError } = await supabase
+  const { data: order, error: orderError } = await adminSupabase
     .from('orders')
     .insert({
       listing_id: listingId,
@@ -66,7 +67,7 @@ export async function createOrder(listingId: string, userId: string) {
   }
 
   // Create initial order event
-  const { error: eventError } = await supabase
+  const { error: eventError } = await adminSupabase
     .from('order_events')
     .insert({
       order_id: order.id,
@@ -82,7 +83,7 @@ export async function createOrder(listingId: string, userId: string) {
   }
 
   // Create thread for buyer-seller communication
-  const { data: thread, error: threadError } = await supabase
+  const { data: thread, error: threadError } = await adminSupabase
     .from('threads')
     .insert({
       order_id: order.id,
