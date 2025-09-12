@@ -34,7 +34,7 @@ export async function createOrder(listingId: string, userId: string) {
     .select('id')
     .eq('listing_id', listingId)
     .eq('buyer_id', userId)
-    .in('status', ['initiated', 'authorized', 'delivered_pending_confirm'])
+    .in('state', ['initiated', 'seller_accept', 'delivering', 'delivered_pending_confirm'])
     .single()
 
   if (existingOrder) {
@@ -48,9 +48,14 @@ export async function createOrder(listingId: string, userId: string) {
       listing_id: listingId,
       buyer_id: userId,
       seller_id: listing.seller_id,
-      status: 'initiated',
+      type: listing.is_rental ? 'rent' : 'buy',
+      quantity: 1,
+      subtotal_cents: listing.price_cents,
+      fees_cents: 0, // TODO: Calculate fees
       total_cents: listing.price_cents,
-      quantity: 1
+      state: 'initiated',
+      delivery_method: listing.delivery_methods[0] || 'in_person',
+      created_by: userId
     })
     .select()
     .single()
@@ -65,9 +70,9 @@ export async function createOrder(listingId: string, userId: string) {
     .from('order_events')
     .insert({
       order_id: order.id,
-      event_type: 'order_created',
-      actor_id: userId,
-      metadata: {
+      type: 'created',
+      actor: userId,
+      data: {
         message: 'Order created successfully'
       }
     })
