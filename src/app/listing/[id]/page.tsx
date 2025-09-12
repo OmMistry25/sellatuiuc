@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase/client'
@@ -146,18 +147,22 @@ export default function ListingDetailPage() {
                 <div>
                   {images.length > 0 ? (
                     <div className="space-y-4">
-                      <img
+                      <Image
                         src={images[0].url}
                         alt={listing.title}
+                        width={400}
+                        height={256}
                         className="w-full h-64 object-cover rounded-lg"
                       />
                       {images.length > 1 && (
                         <div className="grid grid-cols-4 gap-2">
                           {images.slice(1).map((image, index) => (
-                            <img
+                            <Image
                               key={index}
                               src={image.url}
                               alt={`${listing.title} ${index + 2}`}
+                              width={64}
+                              height={64}
                               className="w-full h-16 object-cover rounded"
                             />
                           ))}
