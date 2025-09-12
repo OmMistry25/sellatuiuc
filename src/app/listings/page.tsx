@@ -161,7 +161,11 @@ export default function ListingsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (priceCents: number | null | undefined) => {
+    if (!priceCents || isNaN(priceCents)) {
+      return '$0.00'
+    }
+    const price = priceCents / 100 // Convert cents to dollars
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
@@ -295,7 +299,7 @@ export default function ListingsPage() {
                   
                   <CardContent className="pt-0">
                     <div className="text-2xl font-bold text-primary mb-2">
-                      {formatPrice(listing.price)}
+                      {formatPrice(listing.price_cents)}
                     </div>
                     <div className="space-y-1 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
