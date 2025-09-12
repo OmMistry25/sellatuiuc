@@ -106,6 +106,7 @@ export default function ListingsPage() {
         return
       }
 
+
       setListings(data || [])
       setTotalCount(count || 0)
       setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE))
