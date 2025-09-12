@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase/client'
 import { createOrder } from '@/lib/actions/orders'
-import { createPaymentIntent } from '@/lib/actions/payments'
 import OrderChat from '@/components/chat/OrderChat'
 
 interface Listing {
@@ -49,8 +48,6 @@ export default function ListingDetailPage() {
   const [threadId, setThreadId] = useState<string | null>(null)
   const [orderLoading, setOrderLoading] = useState(false)
   const [orderError, setOrderError] = useState<string | null>(null)
-  const [paymentLoading, setPaymentLoading] = useState(false)
-  const [paymentError, setPaymentError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -183,27 +180,8 @@ export default function ListingDetailPage() {
   const handlePaymentClick = async () => {
     if (!user || !order) return
 
-    setPaymentLoading(true)
-    setPaymentError(null)
-
-    try {
-      const result = await createPaymentIntent(order.id, user.id)
-      
-      if (result.error) {
-        setPaymentError(result.error)
-      } else {
-        console.log('Payment intent created:', result)
-        // TODO: Integrate with Stripe Elements for checkout
-        // For now, just show success message
-        alert('Payment intent created! Checkout integration coming next.')
-        // Refresh the page to show updated order state
-        window.location.reload()
-      }
-    } catch (error) {
-      setPaymentError('An unexpected error occurred')
-    } finally {
-      setPaymentLoading(false)
-    }
+    // Redirect to checkout page
+    router.push(`/checkout/${order.id}`)
   }
 
   if (loading) {
@@ -374,17 +352,13 @@ export default function ListingDetailPage() {
                         
                         {order.state === 'initiated' && (
                           <div className="space-y-2">
-                            <Button 
-                              className="w-full" 
-                              size="lg"
-                              onClick={handlePaymentClick}
-                              disabled={paymentLoading}
-                            >
-                              {paymentLoading ? 'Creating Payment...' : 'Proceed to Payment'}
-                            </Button>
-                            {paymentError && (
-                              <p className="text-red-600 text-sm">{paymentError}</p>
-                            )}
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        onClick={handlePaymentClick}
+                      >
+                        Proceed to Payment
+                      </Button>
                           </div>
                         )}
                       </div>
