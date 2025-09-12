@@ -9,7 +9,16 @@ export async function createOrder(listingId: string) {
   // Get the current user
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   
-  if (userError || !user) {
+  console.log('Server action - User error:', userError)
+  console.log('Server action - User:', user ? { id: user.id, email: user.email } : 'No user')
+  
+  if (userError) {
+    console.error('Auth error in server action:', userError)
+    return { error: `Authentication error: ${userError.message}` }
+  }
+  
+  if (!user) {
+    console.log('No user found in server action')
     return { error: 'You must be signed in to create an order' }
   }
 
