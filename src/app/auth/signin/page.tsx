@@ -75,12 +75,15 @@ export default function SignInPage() {
       })
 
       console.log('Sign in response:', { data, error })
+      console.log('User data:', data?.user)
+      console.log('Session data:', data?.session)
 
       if (error) {
         console.error('Sign in error:', error)
         setMessage(`Error: ${error.message}`)
       } else {
         console.log('Sign in successful')
+        console.log('User email confirmed:', data.user?.email_confirmed_at)
         // Redirect will be handled by the auth state change
         window.location.href = '/'
       }
@@ -126,8 +129,18 @@ export default function SignInPage() {
         setMessage(`Error: ${error.message}`)
       } else {
         console.log('Sign up successful')
-        setMessage('Account created successfully! You can now sign in.')
-        setIsSignUp(false)
+        console.log('User data:', data.user)
+        console.log('Session data:', data.session)
+        
+        if (data.user && !data.session) {
+          setMessage('Account created! Please check your email to confirm your account before signing in.')
+        } else if (data.session) {
+          setMessage('Account created successfully! You are now signed in.')
+          window.location.href = '/'
+        } else {
+          setMessage('Account created successfully! You can now sign in.')
+          setIsSignUp(false)
+        }
       }
     } catch (error) {
       console.error('Unexpected error:', error)
