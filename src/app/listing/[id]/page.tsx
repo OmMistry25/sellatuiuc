@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase/client'
 import { createOrder } from '@/lib/actions/orders'
+import { createPaymentIntent } from '@/lib/actions/payments'
 import OrderChat from '@/components/chat/OrderChat'
 
 interface Listing {
@@ -48,6 +49,8 @@ export default function ListingDetailPage() {
   const [threadId, setThreadId] = useState<string | null>(null)
   const [orderLoading, setOrderLoading] = useState(false)
   const [orderError, setOrderError] = useState<string | null>(null)
+  const [paymentLoading, setPaymentLoading] = useState(false)
+  const [paymentError, setPaymentError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -174,6 +177,32 @@ export default function ListingDetailPage() {
       setOrderError('An unexpected error occurred')
     } finally {
       setOrderLoading(false)
+    }
+  }
+
+  const handlePaymentClick = async () => {
+    if (!user || !order) return
+
+    setPaymentLoading(true)
+    setPaymentError(null)
+
+    try {
+      const result = await createPaymentIntent(order.id, user.id)
+      
+      if (result.error) {
+        setPaymentError(result.error)
+      } else {
+        console.log('Payment intent created:', result)
+        // TODO: Integrate with Stripe Elements for checkout
+        // For now, just show success message
+        alert('Payment intent created! Checkout integration coming next.')
+        // Refresh the page to show updated order state
+        window.location.reload()
+      }
+    } catch (error) {
+      setPaymentError('An unexpected error occurred')
+    } finally {
+      setPaymentLoading(false)
     }
   }
 
@@ -337,9 +366,27 @@ export default function ListingDetailPage() {
                         <p className="text-gray-600">This is your listing</p>
                       </div>
                     ) : order ? (
-                      <div className="text-center">
-                        <p className="text-green-600 font-medium">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-sm text-gray-600 capitalize">Status: {order.state.replace('_', ' ')}</p>
+                      <div className="text-center space-y-3">
+                        <div>
+                          <p className="text-green-600 font-medium">Order #{order.id.slice(0, 8)}</p>
+                          <p className="text-sm text-gray-600 capitalize">Status: {order.state.replace('_', ' ')}</p>
+                        </div>
+                        
+                        {order.state === 'initiated' && (
+                          <div className="space-y-2">
+                            <Button 
+                              className="w-full" 
+                              size="lg"
+                              onClick={handlePaymentClick}
+                              disabled={paymentLoading}
+                            >
+                              {paymentLoading ? 'Creating Payment...' : 'Proceed to Payment'}
+                            </Button>
+                            {paymentError && (
+                              <p className="text-red-600 text-sm">{paymentError}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="space-y-2">
