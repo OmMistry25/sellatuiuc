@@ -10,10 +10,19 @@ export async function GET(request: NextRequest) {
   console.log('Callback URL:', requestUrl.toString())
   console.log('Code parameter:', code)
   console.log('All search params:', Object.fromEntries(requestUrl.searchParams))
+  console.log('URL fragment:', requestUrl.hash)
 
-  // Check if this is a magic link with tokens in the URL
-  const accessToken = requestUrl.searchParams.get('access_token')
-  const refreshToken = requestUrl.searchParams.get('refresh_token')
+  // Check if this is a magic link with tokens in the URL (query params)
+  let accessToken = requestUrl.searchParams.get('access_token')
+  let refreshToken = requestUrl.searchParams.get('refresh_token')
+  
+  // If not in query params, check the URL fragment (hash)
+  if (!accessToken && !refreshToken && requestUrl.hash) {
+    const fragmentParams = new URLSearchParams(requestUrl.hash.substring(1))
+    accessToken = fragmentParams.get('access_token')
+    refreshToken = fragmentParams.get('refresh_token')
+    console.log('Found tokens in URL fragment')
+  }
   
   console.log('Access token:', accessToken ? 'present' : 'not present')
   console.log('Refresh token:', refreshToken ? 'present' : 'not present')
