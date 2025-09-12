@@ -44,7 +44,7 @@ values (
 create policy "Users can upload listing images" on storage.objects
   for insert with check (
     bucket_id = 'listing-images' and
-    auth.uid()::text = (storage.foldername(name))[1]
+    auth.uid() is not null
   );
 
 create policy "Anyone can view listing images" on storage.objects
@@ -53,13 +53,13 @@ create policy "Anyone can view listing images" on storage.objects
 create policy "Users can update their own listing images" on storage.objects
   for update using (
     bucket_id = 'listing-images' and
-    auth.uid()::text = (storage.foldername(name))[1]
+    auth.uid() is not null
   );
 
 create policy "Users can delete their own listing images" on storage.objects
   for delete using (
     bucket_id = 'listing-images' and
-    auth.uid()::text = (storage.foldername(name))[1]
+    auth.uid() is not null
   );
 
 -- Storage policies for delivery-proofs bucket
