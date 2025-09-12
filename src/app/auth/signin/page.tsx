@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { supabase } from '@/lib/supabase/client'
 
 export default function SignInPage() {
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [isSignUp, setIsSignUp] = useState(false)
 
   useEffect(() => {
     const error = searchParams.get('error')
@@ -36,30 +39,95 @@ export default function SignInPage() {
     }
   }, [searchParams])
 
+  const validateEmail = (email: string) => {
+    return email.endsWith('@illinois.edu')
+  }
+
+  const validatePassword = (password: string) => {
+    return password.length >= 8
+  }
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setMessage('')
 
+    // Validate email domain
+    if (!validateEmail(email)) {
+      setMessage('Please use your @illinois.edu email address.')
+      setLoading(false)
+      return
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      setMessage('Password must be at least 8 characters long.')
+      setLoading(false)
+      return
+    }
+
     try {
-      console.log('Sending magic link to:', email)
-      console.log('Redirect URL:', `${window.location.origin}/auth/callback`)
+      console.log('Signing in with:', email)
       
-      const { data, error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+        password,
       })
 
-      console.log('Magic link response:', { data, error })
+      console.log('Sign in response:', { data, error })
 
       if (error) {
-        console.error('Magic link error:', error)
+        console.error('Sign in error:', error)
         setMessage(`Error: ${error.message}`)
       } else {
-        console.log('Magic link sent successfully')
-        setMessage('Check your email for the login link!')
+        console.log('Sign in successful')
+        // Redirect will be handled by the auth state change
+        window.location.href = '/'
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      setMessage('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    // Validate email domain
+    if (!validateEmail(email)) {
+      setMessage('Please use your @illinois.edu email address.')
+      setLoading(false)
+      return
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      setMessage('Password must be at least 8 characters long.')
+      setLoading(false)
+      return
+    }
+
+    try {
+      console.log('Signing up with:', email)
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      console.log('Sign up response:', { data, error })
+
+      if (error) {
+        console.error('Sign up error:', error)
+        setMessage(`Error: ${error.message}`)
+      } else {
+        console.log('Sign up successful')
+        setMessage('Account created successfully! You can now sign in.')
+        setIsSignUp(false)
       }
     } catch (error) {
       console.error('Unexpected error:', error)
@@ -74,43 +142,80 @@ export default function SignInPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to UIUC Marketplace
+            {isSignUp ? 'Create Account' : 'Sign in to UIUC Marketplace'}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your illinois.edu email address
+            {isSignUp ? 'Create your account with your illinois.edu email' : 'Enter your illinois.edu email and password'}
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSignIn}>
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="your.email@illinois.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+        
+        <form className="mt-8 space-y-6" onSubmit={isSignUp ? handleSignUp : handleSignIn}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="mt-1"
+                placeholder="your.email@illinois.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
+                required
+                className="mt-1"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {isSignUp && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Password must be at least 8 characters long
+                </p>
+              )}
+            </div>
           </div>
 
-          <div>
+          <div className="space-y-3">
             <Button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full"
             >
-              {loading ? 'Sending...' : 'Send Magic Link'}
+              {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setIsSignUp(!isSignUp)
+                setMessage('')
+              }}
+            >
+              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
             </Button>
           </div>
 
           {message && (
             <div className={`text-sm text-center ${
-              message.includes('Check your email') ? 'text-green-600' : 'text-red-600'
+              message.includes('successfully') ? 'text-green-600' : 'text-red-600'
             }`}>
               {message}
             </div>
