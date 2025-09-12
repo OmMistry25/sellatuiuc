@@ -45,6 +45,7 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true)
   const [images, setImages] = useState<Array<{ url: string; path: string }>>([])
   const [order, setOrder] = useState<any>(null)
+  const [threadId, setThreadId] = useState<string | null>(null)
   const [orderLoading, setOrderLoading] = useState(false)
   const [orderError, setOrderError] = useState<string | null>(null)
 
@@ -118,10 +119,29 @@ export default function ListingDetailPage() {
       if (!error && data) {
         console.log('Found existing order:', data)
         setOrder(data)
+        // Also fetch the thread for this order
+        fetchThreadForOrder(data.id)
       }
     } catch (error) {
       console.log('No existing order found:', error)
       // No existing order found, which is fine
+    }
+  }
+
+  const fetchThreadForOrder = async (orderId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('threads')
+        .select('id')
+        .eq('order_id', orderId)
+        .single()
+
+      if (!error && data) {
+        console.log('Found thread for order:', data.id)
+        setThreadId(data.id)
+      }
+    } catch (error) {
+      console.log('No thread found for order:', error)
     }
   }
 
@@ -142,6 +162,10 @@ export default function ListingDetailPage() {
         setOrderError(result.error)
       } else {
         console.log('Order created successfully, refreshing page...')
+        // Store threadId if available
+        if (result.threadId) {
+          setThreadId(result.threadId)
+        }
         // Refresh the page to show the order timeline
         window.location.reload()
       }
@@ -405,7 +429,7 @@ export default function ListingDetailPage() {
             <div className="bg-white shadow rounded-lg overflow-hidden">
               <div className="px-4 py-5 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Chat with {isOwner ? 'Buyer' : 'Seller'}</h3>
-                <OrderChat orderId={order.id} />
+                <OrderChat orderId={order.id} threadId={threadId} />
               </div>
             </div>
           </div>

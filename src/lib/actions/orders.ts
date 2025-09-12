@@ -101,5 +101,5 @@ export async function createOrder(listingId: string, userId: string) {
   // Revalidate the listing page
   revalidatePath(`/listing/${listingId}`)
 
-  return { success: true, orderId: order.id }
+  return { success: true, orderId: order.id, threadId: thread?.id }
 }

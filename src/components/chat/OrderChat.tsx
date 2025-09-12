@@ -162,14 +162,19 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
   }
 
   const getMaskedName = (senderId: string) => {
-    if (!thread) return 'Unknown'
+    if (!thread || !user) return 'Unknown'
     
-    if (senderId === thread.buyer_id) {
-      return 'Buyer'
-    } else if (senderId === thread.seller_id) {
-      return 'Seller'
+    // Compare with current user to determine if it's "You" or the other party
+    if (senderId === user.id) {
+      return 'You'
+    } else {
+      // For anonymous chat, just show "Buyer" or "Seller" based on thread roles
+      if (user.id === thread.buyer_id) {
+        return 'Seller'
+      } else {
+        return 'Buyer'
+      }
     }
-    return 'Unknown'
   }
 
   const isOwnMessage = (senderId: string) => {
