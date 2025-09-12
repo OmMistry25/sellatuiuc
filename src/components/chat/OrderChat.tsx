@@ -141,7 +141,13 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
         },
         (payload) => {
           console.log('New message received:', payload.new)
-          setMessages(prev => [...prev, payload.new as Message])
+          console.log('Current messages before update:', messages)
+          setMessages(prev => {
+            console.log('Previous messages:', prev)
+            const newMessages = [...prev, payload.new as Message]
+            console.log('New messages array:', newMessages)
+            return newMessages
+          })
         }
       )
       .subscribe((status) => {
@@ -178,6 +184,16 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
       } else {
         console.log('Message sent successfully:', data)
         setNewMessage('')
+        
+        // Add the message to local state immediately for better UX
+        if (data && data[0]) {
+          setMessages(prev => [...prev, data[0] as Message])
+        }
+        
+        // Also refresh messages to ensure consistency
+        setTimeout(() => {
+          fetchMessages()
+        }, 100)
       }
     } catch (error) {
       console.error('Error sending message:', error)
