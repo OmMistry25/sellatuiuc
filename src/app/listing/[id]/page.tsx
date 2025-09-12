@@ -315,7 +315,7 @@ export default function ListingDetailPage() {
                     ) : order ? (
                       <div className="text-center">
                         <p className="text-green-600 font-medium">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-sm text-gray-600 capitalize">Status: {order.status.replace('_', ' ')}</p>
+                        <p className="text-sm text-gray-600 capitalize">Status: {order.state.replace('_', ' ')}</p>
                       </div>
                     ) : (
                       <div className="space-y-2">
