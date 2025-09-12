@@ -1,10 +1,11 @@
 -- Enable necessary extensions
 create extension if not exists "uuid-ossp";
+create extension if not exists "pgcrypto";
 
 -- Create profiles table
 create table public.profiles (
-  id uuid primary key default uuid_generate_v4(),
-  user_id uuid references auth.users(id) on delete cascade not null,
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null unique,
   email text unique not null,
   display_name text,
   handle text unique,
@@ -21,7 +22,7 @@ create table public.profiles (
 
 -- Create categories table
 create table public.categories (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   name text unique not null,
   slug text unique not null,
   description text,
@@ -31,7 +32,7 @@ create table public.categories (
 
 -- Create audit_log table for tracking changes
 create table public.audit_log (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   actor uuid references auth.users(id),
   table_name text not null,
   row_id uuid not null,

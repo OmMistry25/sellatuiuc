@@ -1,6 +1,6 @@
 -- Create threads table
 create table public.threads (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade, -- nullable for pre-offer chat
   buyer_id uuid references public.profiles(user_id) on delete cascade not null,
   seller_id uuid references public.profiles(user_id) on delete cascade not null,
@@ -11,7 +11,7 @@ create table public.threads (
 
 -- Create messages table
 create table public.messages (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   thread_id uuid references public.threads(id) on delete cascade not null,
   sender_id uuid references auth.users(id) on delete cascade not null,
   content text not null,
@@ -21,7 +21,7 @@ create table public.messages (
 
 -- Create reviews table
 create table public.reviews (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade not null,
   rater_id uuid references auth.users(id) on delete cascade not null,
   ratee_id uuid references auth.users(id) on delete cascade not null,

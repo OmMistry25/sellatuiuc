@@ -1,6 +1,6 @@
 -- Create listings table
 create table public.listings (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   seller_id uuid references public.profiles(user_id) on delete cascade not null,
   category_id uuid references public.categories(id) on delete restrict not null,
   title text not null,
@@ -25,7 +25,7 @@ create table public.listings (
 
 -- Create listing_assets table
 create table public.listing_assets (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   listing_id uuid references public.listings(id) on delete cascade not null,
   kind text check (kind in ('image', 'barcode', 'pdf')) not null,
   path text not null, -- Supabase Storage key
@@ -36,7 +36,7 @@ create table public.listing_assets (
 
 -- Create tickets_meta table (optional metadata for ticket listings)
 create table public.tickets_meta (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   listing_id uuid references public.listings(id) on delete cascade not null,
   event_title text,
   event_datetime timestamptz,

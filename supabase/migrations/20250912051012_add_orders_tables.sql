@@ -1,6 +1,6 @@
 -- Create orders table
 create table public.orders (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   buyer_id uuid references public.profiles(user_id) on delete cascade not null,
   seller_id uuid references public.profiles(user_id) on delete cascade not null,
   listing_id uuid references public.listings(id) on delete restrict not null,
@@ -33,7 +33,7 @@ create table public.orders (
 
 -- Create order_events table for audit trail
 create table public.order_events (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade not null,
   actor uuid references auth.users(id) not null,
   type text check (type in (
@@ -54,7 +54,7 @@ create table public.order_events (
 
 -- Create payouts table
 create table public.payouts (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade not null,
   seller_id uuid references public.profiles(user_id) on delete cascade not null,
   amount_cents int not null,
@@ -66,7 +66,7 @@ create table public.payouts (
 
 -- Create refunds table
 create table public.refunds (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade not null,
   stripe_refund_id text not null,
   amount_cents int not null,
@@ -75,7 +75,7 @@ create table public.refunds (
 
 -- Create disputes table
 create table public.disputes (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   order_id uuid references public.orders(id) on delete cascade not null,
   opened_by uuid references auth.users(id) not null,
   reason text not null,
