@@ -29,15 +29,6 @@ export default function ProfilePage() {
     campus_role: 'student'
   })
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/auth/signin')
-      return
-    }
-
-    fetchProfile()
-  }, [user, router, fetchProfile])
-
   const fetchProfile = useCallback(async () => {
     if (!user) return
 
@@ -65,6 +56,15 @@ export default function ProfilePage() {
       setLoading(false)
     }
   }, [user])
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/auth/signin')
+      return
+    }
+
+    fetchProfile()
+  }, [user, router, fetchProfile])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
