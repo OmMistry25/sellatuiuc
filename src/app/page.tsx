@@ -48,6 +48,9 @@ export default function Home() {
               <h1 className="text-xl font-semibold">UIUC Marketplace</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <Link href="/listings">
+                <Button variant="outline">Browse Listings</Button>
+              </Link>
               <Link href="/sell">
                 <Button>Sell Item</Button>
               </Link>
@@ -70,6 +73,14 @@ export default function Home() {
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900">Welcome to UIUC Marketplace!</h2>
             <p className="mt-2 text-gray-600">You&apos;re successfully signed in.</p>
+            <div className="mt-6 space-x-4">
+              <Link href="/listings">
+                <Button size="lg">Browse Listings</Button>
+              </Link>
+              <Link href="/sell">
+                <Button variant="outline" size="lg">Sell an Item</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

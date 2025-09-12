@@ -1,0 +1,353 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { supabase } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Search, Filter, MapPin, User, Calendar } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
+
+interface Listing {
+  id: string
+  title: string
+  description: string
+  price: number
+  condition: string
+  delivery_methods: string[]
+  campus_location: string
+  quantity: number
+  status: string
+  created_at: string
+  profiles: {
+    full_name: string
+  }
+  categories: {
+    name: string
+    slug: string
+  }
+  listing_assets: Array<{
+    path: string
+    kind: string
+  }>
+}
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+const ITEMS_PER_PAGE = 12
+
+export default function ListingsPage() {
+  const [listings, setListings] = useState<Listing[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name')
+
+      if (!error && data) {
+        setCategories(data)
+      }
+    }
+
+    fetchCategories()
+  }, [])
+
+  // Fetch listings with filters
+  const fetchListings = useCallback(async (page: number = 1) => {
+    setLoading(true)
+    try {
+      let query = supabase
+        .from('listings')
+        .select(`
+          *,
+          profiles!listings_seller_id_fkey(full_name),
+          categories!listings_category_id_fkey(name, slug),
+          listing_assets(path, kind)
+        `)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+
+      // Apply search filter
+      if (searchQuery.trim()) {
+        query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+      }
+
+      // Apply category filter
+      if (selectedCategory !== 'all') {
+        query = query.eq('categories.slug', selectedCategory)
+      }
+
+      // Apply pagination
+      const from = (page - 1) * ITEMS_PER_PAGE
+      const to = from + ITEMS_PER_PAGE - 1
+      query = query.range(from, to)
+
+      const { data, error, count } = await query
+
+      if (error) {
+        console.error('Error fetching listings:', error)
+        return
+      }
+
+      setListings(data || [])
+      setTotalCount(count || 0)
+      setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE))
+      setCurrentPage(page)
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery, selectedCategory])
+
+  // Fetch listings when filters change
+  useEffect(() => {
+    fetchListings(1)
+  }, [fetchListings])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    fetchListings(1)
+  }
+
+  const handlePageChange = (page: number) => {
+    fetchListings(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(price)
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
+  }
+
+  const getImageUrl = (assets: Array<{ path: string; kind: string }>) => {
+    const imageAsset = assets?.find(asset => asset.kind === 'image')
+    if (imageAsset) {
+      return supabase.storage.from('listing-images').getPublicUrl(imageAsset.path).data.publicUrl
+    }
+    return null
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Browse Listings</h1>
+        <p className="text-muted-foreground">Find what you&apos;re looking for on campus</p>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="mb-8 space-y-4">
+        <form onSubmit={handleSearch} className="flex gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search listings..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Button type="submit" variant="default">
+            Search
+          </Button>
+        </form>
+
+        <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Category:</span>
+          </div>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="All categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.slug}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Results Summary */}
+      <div className="mb-6">
+        <p className="text-sm text-muted-foreground">
+          {loading ? 'Loading...' : `${totalCount} listing${totalCount !== 1 ? 's' : ''} found`}
+        </p>
+      </div>
+
+      {/* Listings Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i} className="animate-pulse">
+              <div className="aspect-square bg-muted rounded-t-lg" />
+              <CardHeader>
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-3 bg-muted rounded w-1/2" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-6 bg-muted rounded w-1/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : listings.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-muted-foreground mb-4">
+            <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-medium mb-2">No listings found</h3>
+            <p>Try adjusting your search or filters</p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {listings.map((listing) => {
+            const imageUrl = getImageUrl(listing.listing_assets)
+            
+            return (
+              <Link key={listing.id} href={`/listing/${listing.id}`}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="aspect-square relative overflow-hidden rounded-t-lg">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={listing.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <span className="text-muted-foreground text-sm">No image</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg line-clamp-2">{listing.title}</CardTitle>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Badge variant="secondary" className="text-xs">
+                        {listing.categories?.name}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-0">
+                    <div className="text-2xl font-bold text-primary mb-2">
+                      {formatPrice(listing.price)}
+                    </div>
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {listing.campus_location}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        {listing.profiles?.full_name}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {formatDate(listing.created_at)}
+                      </div>
+                    </div>
+                  </CardContent>
+                  
+                  <CardFooter className="pt-0">
+                    <div className="flex items-center justify-between w-full text-xs text-muted-foreground">
+                      <span>Qty: {listing.quantity}</span>
+                      <span className="capitalize">{listing.condition}</span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-12 flex justify-center">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum
+                if (totalPages <= 5) {
+                  pageNum = i + 1
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i
+                } else {
+                  pageNum = currentPage - 2 + i
+                }
+                
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={currentPage === pageNum ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(pageNum)}
+                    className="w-8 h-8 p-0"
+                  >
+                    {pageNum}
+                  </Button>
+                )
+              })}
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
