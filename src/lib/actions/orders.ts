@@ -6,6 +6,12 @@ import { revalidatePath } from 'next/cache'
 export async function createOrder(listingId: string) {
   const supabase = await createClient()
   
+  // Debug: Check what cookies are available
+  const { cookies } = await import('next/headers')
+  const cookieStore = await cookies()
+  const allCookies = cookieStore.getAll()
+  console.log('Server action - Available cookies:', allCookies.map(c => c.name))
+  
   // Get the current user
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   
