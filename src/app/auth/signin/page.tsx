@@ -1,13 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase/client'
 
 export default function SignInPage() {
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      switch (error) {
+        case 'auth_failed':
+          setMessage('Authentication failed. Please try again.')
+          break
+        case 'session_failed':
+          setMessage('Session setup failed. Please try again.')
+          break
+        case 'no_session':
+          setMessage('No active session found. Please sign in again.')
+          break
+        case 'callback_failed':
+          setMessage('Sign-in process failed. Please try again.')
+          break
+        default:
+          setMessage('An error occurred during sign-in. Please try again.')
+      }
+    }
+  }, [searchParams])
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
