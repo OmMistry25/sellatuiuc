@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Search, Filter, MapPin, User, Calendar, ArrowLeft } from 'lucide-react'
+import { Search, Filter, MapPin, User, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useAuth } from '@/lib/auth'
 
 interface Listing {
   id: string
@@ -44,6 +45,7 @@ interface Category {
 const ITEMS_PER_PAGE = 12
 
 export default function ListingsPage() {
+  const { user, loading: authLoading, signOut } = useAuth()
   const [listings, setListings] = useState<Listing[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -188,20 +190,70 @@ export default function ListingsPage() {
     return null
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <Link href="/">
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
-        <h1 className="text-3xl font-bold mb-2">Browse Listings</h1>
-        <p className="text-muted-foreground">Find what you&apos;re looking for on campus</p>
       </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">UIUC Marketplace</h1>
+            <p className="mt-2 text-gray-600">Please sign in to browse listings</p>
+          </div>
+          <div className="space-y-4">
+            <Link href="/auth/signin">
+              <Button className="w-full">Sign In</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <h1 className="text-xl font-semibold">UIUC Marketplace</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="/listings">
+                <Button variant="outline">Browse Listings</Button>
+              </Link>
+              <Link href="/sell">
+                <Button>Sell Item</Button>
+              </Link>
+              <Link href="/profile">
+                <Button variant="outline">Profile</Button>
+              </Link>
+              <span className="text-sm text-gray-700">
+                Welcome, {user.email}
+              </span>
+              <Button variant="outline" onClick={signOut}>
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-0">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Browse Listings</h1>
+            <p className="text-muted-foreground">Find what you&apos;re looking for on campus</p>
+          </div>
 
       {/* Search and Filters */}
       <div className="mb-8 space-y-4">
@@ -389,6 +441,8 @@ export default function ListingsPage() {
           </div>
         </div>
       )}
+        </div>
+      </main>
     </div>
   )
 }
