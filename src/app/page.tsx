@@ -54,6 +54,9 @@ export default function Home() {
               <Link href="/sell">
                 <Button>Sell Item</Button>
               </Link>
+              <Link href="/seller/orders">
+                <Button variant="outline">My Orders</Button>
+              </Link>
               <Link href="/profile">
                 <Button variant="outline">Profile</Button>
               </Link>
