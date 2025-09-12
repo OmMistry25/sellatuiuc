@@ -42,19 +42,27 @@ export default function SignInPage() {
     setMessage('')
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      console.log('Sending magic link to:', email)
+      console.log('Redirect URL:', `${window.location.origin}/auth/callback`)
+      
+      const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
 
+      console.log('Magic link response:', { data, error })
+
       if (error) {
-        setMessage(error.message)
+        console.error('Magic link error:', error)
+        setMessage(`Error: ${error.message}`)
       } else {
+        console.log('Magic link sent successfully')
         setMessage('Check your email for the login link!')
       }
-    } catch {
+    } catch (error) {
+      console.error('Unexpected error:', error)
       setMessage('An error occurred. Please try again.')
     } finally {
       setLoading(false)
