@@ -33,6 +33,7 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
   const [loading, setLoading] = useState(false)
   const [sending, setSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const subscriptionRef = useRef<any>(null)
 
   useEffect(() => {
     if (threadId) {
@@ -48,6 +49,15 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Cleanup subscription on unmount
+  useEffect(() => {
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current)
+      }
+    }
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -114,6 +124,11 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
     const id = threadIdToUse || threadId
     if (!id) return
 
+    // Clean up existing subscription
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current)
+    }
+
     const channel = supabase
       .channel(`messages:${id}`)
       .on(
@@ -125,14 +140,16 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
           filter: `thread_id=eq.${id}`
         },
         (payload) => {
+          console.log('New message received:', payload.new)
           setMessages(prev => [...prev, payload.new as Message])
         }
       )
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Subscription status:', status)
+      })
 
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    subscriptionRef.current = channel
+    return channel
   }
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -141,17 +158,25 @@ export default function OrderChat({ orderId, threadId }: OrderChatProps) {
 
     setSending(true)
     try {
-      const { error } = await supabase
+      console.log('Sending message:', {
+        thread_id: thread.id,
+        sender_id: user.id,
+        content: newMessage.trim()
+      })
+
+      const { data, error } = await supabase
         .from('messages')
         .insert({
           thread_id: thread.id,
           sender_id: user.id,
           content: newMessage.trim()
         })
+        .select()
 
       if (error) {
         console.error('Error sending message:', error)
       } else {
+        console.log('Message sent successfully:', data)
         setNewMessage('')
       }
     } catch (error) {
