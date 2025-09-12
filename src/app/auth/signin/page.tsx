@@ -27,6 +27,9 @@ export default function SignInPage() {
         case 'callback_failed':
           setMessage('Sign-in process failed. Please try again.')
           break
+        case 'no_code':
+          setMessage('The magic link is invalid or has expired. Please request a new one.')
+          break
         default:
           setMessage('An error occurred during sign-in. Please try again.')
       }
