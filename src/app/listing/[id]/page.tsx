@@ -55,7 +55,7 @@ export default function ListingDetailPage() {
   }, [id])
 
   useEffect(() => {
-    if (user && listing && !isOwner) {
+    if (user && listing && user.id !== listing.seller_id) {
       checkExistingOrder()
     }
   }, [user, listing])
