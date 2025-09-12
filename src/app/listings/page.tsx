@@ -73,14 +73,10 @@ export default function ListingsPage() {
   const fetchListings = useCallback(async (page: number = 1) => {
     setLoading(true)
     try {
+      // First, get the listings with basic info
       let query = supabase
         .from('listings')
-        .select(`
-          *,
-          profiles!listings_seller_id_fkey(full_name),
-          categories!listings_category_id_fkey(name, slug),
-          listing_assets(path, kind)
-        `)
+        .select('*')
         .eq('status', 'active')
         .order('created_at', { ascending: false })
 
@@ -89,25 +85,57 @@ export default function ListingsPage() {
         query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
       }
 
-      // Apply category filter
-      if (selectedCategory !== 'all') {
-        query = query.eq('categories.slug', selectedCategory)
-      }
-
       // Apply pagination
       const from = (page - 1) * ITEMS_PER_PAGE
       const to = from + ITEMS_PER_PAGE - 1
       query = query.range(from, to)
 
-      const { data, error, count } = await query
+      const { data: listings, error: listingsError, count } = await query
 
-      if (error) {
-        console.error('Error fetching listings:', error)
+      if (listingsError) {
+        console.error('Error fetching listings:', listingsError)
         return
       }
 
+      if (!listings || listings.length === 0) {
+        setListings([])
+        setTotalCount(0)
+        setTotalPages(0)
+        setCurrentPage(page)
+        return
+      }
 
-      setListings(data || [])
+      // Get unique seller IDs and category IDs
+      const sellerIds = [...new Set(listings.map(l => l.seller_id))]
+      const categoryIds = [...new Set(listings.map(l => l.category_id))]
+
+      // Fetch profiles and categories
+      const [profilesResult, categoriesResult, assetsResult] = await Promise.all([
+        supabase.from('profiles').select('user_id, full_name').in('user_id', sellerIds),
+        supabase.from('categories').select('id, name, slug').in('id', categoryIds),
+        supabase.from('listing_assets').select('listing_id, path, kind').in('listing_id', listings.map(l => l.id))
+      ])
+
+      // Combine the data
+      const enrichedListings = listings.map(listing => {
+        const profile = profilesResult.data?.find(p => p.user_id === listing.seller_id)
+        const category = categoriesResult.data?.find(c => c.id === listing.category_id)
+        const assets = assetsResult.data?.filter(a => a.listing_id === listing.id) || []
+
+        return {
+          ...listing,
+          profiles: profile ? { full_name: profile.full_name } : null,
+          categories: category ? { name: category.name, slug: category.slug } : null,
+          listing_assets: assets
+        }
+      })
+
+      // Apply category filter after enrichment
+      const filteredListings = selectedCategory === 'all' 
+        ? enrichedListings 
+        : enrichedListings.filter(l => l.categories?.slug === selectedCategory)
+
+      setListings(filteredListings)
       setTotalCount(count || 0)
       setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE))
       setCurrentPage(page)
