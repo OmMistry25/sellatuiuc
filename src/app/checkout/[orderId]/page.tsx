@@ -137,8 +137,8 @@ export default function CheckoutPage() {
         return
       }
 
-      // Check if order is in correct state
-      if (orderData.state !== 'seller_accept') {
+      // Check if order is in correct state (initiated or seller_accept)
+      if (!['initiated', 'seller_accept'].includes(orderData.state)) {
         setError('Order is not ready for payment')
         return
       }

@@ -350,7 +350,7 @@ export default function ListingDetailPage() {
                           <p className="text-sm text-gray-600 capitalize">Status: {order.state.replace('_', ' ')}</p>
                         </div>
                         
-                        {order.state === 'initiated' && (
+                        {['initiated', 'seller_accept'].includes(order.state) && (
                           <div className="space-y-2">
                       <Button
                         className="w-full"
