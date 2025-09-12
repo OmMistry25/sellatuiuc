@@ -78,6 +78,22 @@ export async function createOrder(listingId: string) {
     console.error('Error creating order event:', eventError)
   }
 
+  // Create thread for buyer-seller communication
+  const { data: thread, error: threadError } = await supabase
+    .from('threads')
+    .insert({
+      order_id: order.id,
+      buyer_id: user.id,
+      seller_id: listing.seller_id,
+      is_anonymous: true
+    })
+    .select()
+    .single()
+
+  if (threadError) {
+    console.error('Error creating thread:', threadError)
+  }
+
   // Revalidate the listing page
   revalidatePath(`/listing/${listingId}`)
 

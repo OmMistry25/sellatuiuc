@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase/client'
 import { createOrder } from '@/lib/actions/orders'
+import OrderChat from '@/components/chat/OrderChat'
 
 interface Listing {
   id: string
@@ -386,6 +387,18 @@ export default function ListingDetailPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Order Chat */}
+        {order && (
+          <div className="mt-8">
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Chat with {isOwner ? 'Buyer' : 'Seller'}</h3>
+                <OrderChat orderId={order.id} />
               </div>
             </div>
           </div>
