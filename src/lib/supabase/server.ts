@@ -10,28 +10,24 @@ export const createClient = async () => {
     {
       cookies: {
         get(name: string) {
-          const cookie = cookieStore.get(name)
-          console.log(`Server - Getting cookie ${name}:`, cookie?.value ? 'present' : 'missing')
-          return cookie?.value
+          return cookieStore.get(name)?.value
         },
         set(name: string, value: string, options: any) {
           try {
             cookieStore.set({ name, value, ...options })
-            console.log(`Server - Setting cookie ${name}`)
           } catch (error) {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have great reasons to do so.
-            console.warn('Cookie was not set in a Server Component', error)
+            // console.warn('Cookie was not set in a Server Component', error)
           }
         },
         remove(name: string, options: any) {
           try {
             cookieStore.set({ name, value: '', ...options })
-            console.log(`Server - Removing cookie ${name}`)
           } catch (error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have great reasons to do so.
-            console.warn('Cookie was not deleted in a Server Component', error)
+            // console.warn('Cookie was not deleted in a Server Component', error)
           }
         },
       },

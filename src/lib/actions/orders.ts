@@ -6,25 +6,10 @@ import { revalidatePath } from 'next/cache'
 export async function createOrder(listingId: string) {
   const supabase = await createClient()
   
-  // Debug: Check what cookies are available
-  const { cookies } = await import('next/headers')
-  const cookieStore = await cookies()
-  const allCookies = cookieStore.getAll()
-  console.log('Server action - Available cookies:', allCookies.map(c => c.name))
-  
   // Get the current user
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   
-  console.log('Server action - User error:', userError)
-  console.log('Server action - User:', user ? { id: user.id, email: user.email } : 'No user')
-  
-  if (userError) {
-    console.error('Auth error in server action:', userError)
-    return { error: `Authentication error: ${userError.message}` }
-  }
-  
-  if (!user) {
-    console.log('No user found in server action')
+  if (userError || !user) {
     return { error: 'You must be signed in to create an order' }
   }
 

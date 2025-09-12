@@ -122,10 +122,7 @@ export default function ListingDetailPage() {
   }
 
   const handleBuyClick = async () => {
-    console.log('Client - User:', user ? { id: user.id, email: user.email } : 'No user')
-    
     if (!user) {
-      console.log('Client - No user, redirecting to sign in')
       router.push('/auth/signin')
       return
     }
@@ -134,9 +131,7 @@ export default function ListingDetailPage() {
     setOrderError(null)
 
     try {
-      console.log('Client - Calling createOrder with listing ID:', listing!.id)
       const result = await createOrder(listing!.id)
-      console.log('Client - CreateOrder result:', result)
       
       if (result.error) {
         setOrderError(result.error)
@@ -145,7 +140,6 @@ export default function ListingDetailPage() {
         window.location.reload()
       }
     } catch (error) {
-      console.error('Client - Unexpected error:', error)
       setOrderError('An unexpected error occurred')
     } finally {
       setOrderLoading(false)
