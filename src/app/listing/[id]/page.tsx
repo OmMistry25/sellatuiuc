@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase/client'
+import { createOrder } from '@/lib/actions/orders'
 
 interface Listing {
   id: string
@@ -42,12 +43,21 @@ export default function ListingDetailPage() {
   const [listing, setListing] = useState<Listing | null>(null)
   const [loading, setLoading] = useState(true)
   const [images, setImages] = useState<Array<{ url: string; path: string }>>([])
+  const [order, setOrder] = useState<any>(null)
+  const [orderLoading, setOrderLoading] = useState(false)
+  const [orderError, setOrderError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
       fetchListing()
     }
   }, [id])
+
+  useEffect(() => {
+    if (user && listing && !isOwner) {
+      checkExistingOrder()
+    }
+  }, [user, listing])
 
   const fetchListing = async () => {
     try {
@@ -87,6 +97,51 @@ export default function ListingDetailPage() {
       console.error('Error:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const checkExistingOrder = async () => {
+    if (!user || !listing) return
+
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('listing_id', listing.id)
+        .eq('buyer_id', user.id)
+        .in('status', ['initiated', 'authorized', 'delivered_pending_confirm'])
+        .single()
+
+      if (!error && data) {
+        setOrder(data)
+      }
+    } catch (error) {
+      // No existing order found, which is fine
+    }
+  }
+
+  const handleBuyClick = async () => {
+    if (!user) {
+      router.push('/auth/signin')
+      return
+    }
+
+    setOrderLoading(true)
+    setOrderError(null)
+
+    try {
+      const result = await createOrder(listing!.id)
+      
+      if (result.error) {
+        setOrderError(result.error)
+      } else {
+        // Refresh the page to show the order timeline
+        window.location.reload()
+      }
+    } catch (error) {
+      setOrderError('An unexpected error occurred')
+    } finally {
+      setOrderLoading(false)
     }
   }
 
@@ -249,10 +304,25 @@ export default function ListingDetailPage() {
                       <div className="text-center">
                         <p className="text-gray-600">This is your listing</p>
                       </div>
+                    ) : order ? (
+                      <div className="text-center">
+                        <p className="text-green-600 font-medium">Order #{order.id.slice(0, 8)}</p>
+                        <p className="text-sm text-gray-600 capitalize">Status: {order.status.replace('_', ' ')}</p>
+                      </div>
                     ) : (
-                      <Button className="w-full" size="lg">
-                        {listing.is_rental ? 'Rent Item' : 'Buy Item'}
-                      </Button>
+                      <div className="space-y-2">
+                        <Button 
+                          className="w-full" 
+                          size="lg"
+                          onClick={handleBuyClick}
+                          disabled={orderLoading}
+                        >
+                          {orderLoading ? 'Creating Order...' : (listing.is_rental ? 'Rent Item' : 'Buy Item')}
+                        </Button>
+                        {orderError && (
+                          <p className="text-red-600 text-sm text-center">{orderError}</p>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -260,6 +330,66 @@ export default function ListingDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Order Timeline */}
+        {order && (
+          <div className="mt-8">
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Order Timeline</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-900">Order Created</p>
+                      <p className="text-sm text-gray-500">Order #{order.id.slice(0, 8)} has been initiated</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-500">Payment Authorization</p>
+                      <p className="text-sm text-gray-500">Waiting for payment to be authorized</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-500">Delivery</p>
+                      <p className="text-sm text-gray-500">Waiting for seller to deliver the item</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-500">Confirmation</p>
+                      <p className="text-sm text-gray-500">Waiting for delivery confirmation</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
