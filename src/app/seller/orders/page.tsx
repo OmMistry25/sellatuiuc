@@ -124,6 +124,51 @@ export default function SellerOrdersPage() {
     return profile?.display_name || profile?.handle || 'Anonymous'
   }
 
+  const handleAcceptOrder = async (orderId: string) => {
+    if (!user) return
+
+    setActionLoading(orderId)
+    try {
+      const result = await acceptOrder(orderId, user.id)
+      
+      if (result.error) {
+        alert(`Error: ${result.error}`)
+      } else {
+        // Refresh orders to show updated state
+        await fetchOrders()
+        alert('Order accepted successfully!')
+      }
+    } catch (error) {
+      alert('An unexpected error occurred')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleRejectOrder = async (orderId: string) => {
+    if (!user) return
+
+    const confirmed = confirm('Are you sure you want to reject this order? This action cannot be undone.')
+    if (!confirmed) return
+
+    setActionLoading(orderId)
+    try {
+      const result = await rejectOrder(orderId, user.id)
+      
+      if (result.error) {
+        alert(`Error: ${result.error}`)
+      } else {
+        // Refresh orders to show updated state
+        await fetchOrders()
+        alert('Order rejected successfully!')
+      }
+    } catch (error) {
+      alert('An unexpected error occurred')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -246,6 +291,14 @@ export default function SellerOrdersPage() {
                         View Listing
                       </Button>
                       
+                      <Button
+                        onClick={() => router.push(`/order/${order.id}/chat`)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        View Chat
+                      </Button>
+                      
                       {order.state === 'seller_accept' && (
                         <>
                           <Button
@@ -285,48 +338,4 @@ export default function SellerOrdersPage() {
     </div>
   )
 
-  const handleAcceptOrder = async (orderId: string) => {
-    if (!user) return
-
-    setActionLoading(orderId)
-    try {
-      const result = await acceptOrder(orderId, user.id)
-      
-      if (result.error) {
-        alert(`Error: ${result.error}`)
-      } else {
-        // Refresh orders to show updated state
-        await fetchOrders()
-        alert('Order accepted successfully!')
-      }
-    } catch (error) {
-      alert('An unexpected error occurred')
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  const handleRejectOrder = async (orderId: string) => {
-    if (!user) return
-
-    const confirmed = confirm('Are you sure you want to reject this order? This action cannot be undone.')
-    if (!confirmed) return
-
-    setActionLoading(orderId)
-    try {
-      const result = await rejectOrder(orderId, user.id)
-      
-      if (result.error) {
-        alert(`Error: ${result.error}`)
-      } else {
-        // Refresh orders to show updated state
-        await fetchOrders()
-        alert('Order rejected successfully!')
-      }
-    } catch (error) {
-      alert('An unexpected error occurred')
-    } finally {
-      setActionLoading(null)
-    }
-  }
 }
