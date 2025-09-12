@@ -105,18 +105,22 @@ export default function ListingDetailPage() {
     if (!user || !listing) return
 
     try {
+      console.log('Checking for existing order for listing:', listing.id, 'user:', user.id)
       const { data, error } = await supabase
         .from('orders')
         .select('*')
         .eq('listing_id', listing.id)
         .eq('buyer_id', user.id)
-        .in('status', ['initiated', 'authorized', 'delivered_pending_confirm'])
+        .in('state', ['initiated', 'seller_accept', 'delivering', 'delivered_pending_confirm'])
         .single()
 
+      console.log('Order check result:', { data, error })
       if (!error && data) {
+        console.log('Found existing order:', data)
         setOrder(data)
       }
     } catch (error) {
+      console.log('No existing order found:', error)
       // No existing order found, which is fine
     }
   }
@@ -132,14 +136,17 @@ export default function ListingDetailPage() {
 
     try {
       const result = await createOrder(listing!.id, user.id)
+      console.log('Order creation result:', result)
       
       if (result.error) {
         setOrderError(result.error)
       } else {
+        console.log('Order created successfully, refreshing page...')
         // Refresh the page to show the order timeline
         window.location.reload()
       }
     } catch (error) {
+      console.error('Unexpected error in order creation:', error)
       setOrderError('An unexpected error occurred')
     } finally {
       setOrderLoading(false)
