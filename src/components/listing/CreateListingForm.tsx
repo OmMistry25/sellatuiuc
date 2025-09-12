@@ -113,6 +113,19 @@ export function CreateListingForm() {
     setErrors({})
 
     try {
+      // Check if user has a profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (profileError || !profile) {
+        console.error('User profile not found:', profileError)
+        setErrors({ submit: 'User profile not found. Please complete your profile first.' })
+        return
+      }
+
       // Validate form data
       const validatedData = createListingSchema.parse({
         ...formData,
@@ -144,7 +157,24 @@ export function CreateListingForm() {
 
       if (listingError) {
         console.error('Error creating listing:', listingError)
-        setErrors({ submit: 'Failed to create listing' })
+        console.error('Form data being submitted:', {
+          seller_id: user.id,
+          category_id: validatedData.category_id,
+          title: validatedData.title,
+          description: validatedData.description,
+          price_cents: validatedData.price_cents,
+          is_rental: validatedData.is_rental,
+          rental_day_price_cents: validatedData.rental_day_price_cents,
+          rental_deposit_cents: validatedData.rental_deposit_cents,
+          rental_min_days: validatedData.rental_min_days,
+          rental_max_days: validatedData.rental_max_days,
+          condition: validatedData.condition,
+          quantity: validatedData.quantity,
+          delivery_methods: validatedData.delivery_methods,
+          campus_location: validatedData.campus_location,
+          status: 'active'
+        })
+        setErrors({ submit: `Failed to create listing: ${listingError.message || 'Unknown error'}` })
         return
       }
 
