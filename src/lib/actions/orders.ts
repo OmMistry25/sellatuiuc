@@ -3,13 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function createOrder(listingId: string) {
+export async function createOrder(listingId: string, userId: string) {
   const supabase = await createClient()
   
-  // Get the current user
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  
-  if (userError || !user) {
+  // Validate that the user ID is provided
+  if (!userId) {
     return { error: 'You must be signed in to create an order' }
   }
 
@@ -26,7 +24,7 @@ export async function createOrder(listingId: string) {
   }
 
   // Check if user is the seller
-  if (listing.seller_id === user.id) {
+  if (listing.seller_id === userId) {
     return { error: 'You cannot buy your own listing' }
   }
 
@@ -35,7 +33,7 @@ export async function createOrder(listingId: string) {
     .from('orders')
     .select('id')
     .eq('listing_id', listingId)
-    .eq('buyer_id', user.id)
+    .eq('buyer_id', userId)
     .in('status', ['initiated', 'authorized', 'delivered_pending_confirm'])
     .single()
 
@@ -48,7 +46,7 @@ export async function createOrder(listingId: string) {
     .from('orders')
     .insert({
       listing_id: listingId,
-      buyer_id: user.id,
+      buyer_id: userId,
       seller_id: listing.seller_id,
       status: 'initiated',
       total_cents: listing.price_cents,
@@ -68,7 +66,7 @@ export async function createOrder(listingId: string) {
     .insert({
       order_id: order.id,
       event_type: 'order_created',
-      actor_id: user.id,
+      actor_id: userId,
       metadata: {
         message: 'Order created successfully'
       }
@@ -83,7 +81,7 @@ export async function createOrder(listingId: string) {
     .from('threads')
     .insert({
       order_id: order.id,
-      buyer_id: user.id,
+      buyer_id: userId,
       seller_id: listing.seller_id,
       is_anonymous: true
     })

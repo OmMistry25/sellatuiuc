@@ -131,7 +131,7 @@ export default function ListingDetailPage() {
     setOrderError(null)
 
     try {
-      const result = await createOrder(listing!.id)
+      const result = await createOrder(listing!.id, user.id)
       
       if (result.error) {
         setOrderError(result.error)
