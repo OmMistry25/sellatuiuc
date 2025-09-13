@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react'
 export default function LandingPage() {
   const [searchText, setSearchText] = useState('')
   const [currentSearchIndex, setCurrentSearchIndex] = useState(0)
-  const searchExamples = ['textbooks', 'furniture', 'electronics', 'bikes', 'clothes', 'kitchen items']
+  const searchExamples = ['iclickers', 'football game tix', 'textbook rentals', 'lab glasses']
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,7 +103,7 @@ export default function LandingPage() {
                 <div className="w-2 h-6 bg-orange-500 animate-pulse rounded"></div>
               </div>
             </div>
-            <p className="text-sm text-gray-400 mt-4 text-center">Try searching for: textbooks, furniture, electronics...</p>
+            <p className="text-sm text-gray-400 mt-4 text-center">Try searching for: iclickers, football game tix, textbook rentals...</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
