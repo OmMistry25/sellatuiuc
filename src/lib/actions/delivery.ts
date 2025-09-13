@@ -55,7 +55,7 @@ export async function markOrderAsDelivered(
       .from('order_events')
       .insert({
         order_id: orderId,
-        type: 'delivered',
+        type: 'proof_uploaded',
         actor: userId,
         data: {
           message: 'Item delivered with proof',
