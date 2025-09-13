@@ -91,19 +91,19 @@ export default function LandingPage() {
           {/* Interactive Search Demo */}
           <div className="mb-12 max-w-lg mx-auto">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 value={searchText}
                 readOnly
                 placeholder="Search for anything..."
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full pl-14 pr-16 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium tracking-wide"
               />
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <div className="absolute right-5 top-1/2 transform -translate-y-1/2">
                 <div className="w-2 h-6 bg-orange-500 animate-pulse rounded"></div>
               </div>
             </div>
-            <p className="text-sm text-gray-400 mt-3 text-center">Try searching for: textbooks, furniture, electronics...</p>
+            <p className="text-sm text-gray-400 mt-4 text-center">Try searching for: textbooks, furniture, electronics...</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
@@ -114,7 +114,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="/listings">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 rounded-2xl px-10 py-6 text-lg font-semibold backdrop-blur-md">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-white/50 text-white hover:bg-white hover:text-gray-900 rounded-2xl px-10 py-6 text-lg font-semibold backdrop-blur-md bg-white/5">
                 Browse Listings
               </Button>
             </Link>
@@ -480,7 +480,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="/listings">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-orange-600 rounded-2xl px-12 py-6 text-xl font-bold backdrop-blur-md">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-orange-600 rounded-2xl px-12 py-6 text-xl font-bold backdrop-blur-md bg-white/10">
                 Browse Listings
               </Button>
             </Link>
