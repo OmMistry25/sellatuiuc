@@ -85,7 +85,7 @@ export default function SignInPage() {
         console.log('Sign in successful')
         console.log('User email confirmed:', data.user?.email_confirmed_at)
         // Redirect will be handled by the auth state change
-        window.location.href = '/'
+        window.location.href = '/dashboard'
       }
     } catch (error) {
       console.error('Unexpected error:', error)
@@ -136,7 +136,7 @@ export default function SignInPage() {
           setMessage('Account created! Please check your email to confirm your account before signing in.')
         } else if (data.session) {
           setMessage('Account created successfully! You are now signed in.')
-          window.location.href = '/'
+          window.location.href = '/dashboard'
         } else {
           setMessage('Account created successfully! You can now sign in.')
           setIsSignUp(false)
