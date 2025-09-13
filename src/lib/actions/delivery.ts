@@ -75,3 +75,69 @@ export async function markOrderAsDelivered(
     return { error: 'An unexpected error occurred' }
   }
 }
+
+export async function confirmDelivery(orderId: string, userId: string) {
+  const adminSupabase = createAdminClient()
+  
+  try {
+    // Verify the user is the buyer of this order
+    const { data: order, error: orderError } = await adminSupabase
+      .from('orders')
+      .select('buyer_id, state')
+      .eq('id', orderId)
+      .single()
+
+    if (orderError || !order) {
+      return { error: 'Order not found' }
+    }
+
+    if (order.buyer_id !== userId) {
+      return { error: 'Unauthorized: You are not the buyer of this order' }
+    }
+
+    if (order.state !== 'delivered_pending_confirm') {
+      return { error: 'Order is not waiting for confirmation' }
+    }
+
+    // Update order state to completed
+    const { error: updateError } = await adminSupabase
+      .from('orders')
+      .update({
+        state: 'completed',
+        confirmed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        updated_by: userId
+      })
+      .eq('id', orderId)
+
+    if (updateError) {
+      console.error('Error updating order:', updateError)
+      return { error: `Failed to update order: ${updateError.message}` }
+    }
+
+    // Create order event
+    await adminSupabase
+      .from('order_events')
+      .insert({
+        order_id: orderId,
+        type: 'confirmed',
+        actor: userId,
+        data: {
+          message: 'Delivery confirmed by buyer'
+        }
+      })
+
+    // TODO: Capture the Stripe PaymentIntent and create transfer to seller
+    // This would require calling the Stripe API to capture the payment
+
+    // Revalidate relevant paths
+    revalidatePath(`/listing/${orderId}`)
+    revalidatePath(`/order/${orderId}/confirm`)
+
+    return { success: true }
+
+  } catch (error) {
+    console.error('Error confirming delivery:', error)
+    return { error: 'An unexpected error occurred' }
+  }
+}

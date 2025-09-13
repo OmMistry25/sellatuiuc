@@ -361,6 +361,21 @@ export default function ListingDetailPage() {
                       </Button>
                           </div>
                         )}
+                        
+                        {order.state === 'delivered_pending_confirm' && (
+                          <div className="space-y-2">
+                            <Button
+                              className="w-full"
+                              size="lg"
+                              onClick={() => router.push(`/order/${order.id}/confirm`)}
+                            >
+                              Confirm Delivery
+                            </Button>
+                            <p className="text-sm text-gray-600 text-center">
+                              The seller has uploaded delivery proof. Please confirm you received the item.
+                            </p>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -391,6 +406,7 @@ export default function ListingDetailPage() {
               <div className="px-4 py-5 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Order Timeline</h3>
                 <div className="space-y-4">
+                  {/* Order Created - Always completed */}
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -403,39 +419,80 @@ export default function ListingDetailPage() {
                     </div>
                   </div>
                   
+                  {/* Payment Authorization */}
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        ['seller_accept', 'delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                          ? 'bg-green-100' : 'bg-gray-100'
+                      }`}>
+                        <div className={`w-3 h-3 rounded-full ${
+                          ['seller_accept', 'delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                            ? 'bg-green-600' : 'bg-gray-400'
+                        }`}></div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-500">Payment Authorization</p>
-                      <p className="text-sm text-gray-500">Waiting for payment to be authorized</p>
+                      <p className={`text-sm font-medium ${
+                        ['seller_accept', 'delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                          ? 'text-gray-900' : 'text-gray-500'
+                      }`}>Payment Authorization</p>
+                      <p className="text-sm text-gray-500">
+                        {['seller_accept', 'delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                          ? 'Payment has been authorized'
+                          : 'Waiting for payment to be authorized'
+                        }
+                      </p>
                     </div>
                   </div>
                   
+                  {/* Delivery */}
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        ['delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                          ? 'bg-green-100' : 'bg-gray-100'
+                      }`}>
+                        <div className={`w-3 h-3 rounded-full ${
+                          ['delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                            ? 'bg-green-600' : 'bg-gray-400'
+                        }`}></div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-500">Delivery</p>
-                      <p className="text-sm text-gray-500">Waiting for seller to deliver the item</p>
+                      <p className={`text-sm font-medium ${
+                        ['delivering', 'delivered_pending_confirm', 'completed'].includes(order.state)
+                          ? 'text-gray-900' : 'text-gray-500'
+                      }`}>Delivery</p>
+                      <p className="text-sm text-gray-500">
+                        {order.state === 'delivering' && 'Seller is delivering the item'}
+                        {order.state === 'delivered_pending_confirm' && 'Item has been delivered'}
+                        {order.state === 'completed' && 'Item has been delivered'}
+                        {!['delivering', 'delivered_pending_confirm', 'completed'].includes(order.state) && 'Waiting for seller to deliver the item'}
+                      </p>
                     </div>
                   </div>
                   
+                  {/* Confirmation */}
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        order.state === 'completed' ? 'bg-green-100' : 'bg-gray-100'
+                      }`}>
+                        <div className={`w-3 h-3 rounded-full ${
+                          order.state === 'completed' ? 'bg-green-600' : 'bg-gray-400'
+                        }`}></div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-500">Confirmation</p>
-                      <p className="text-sm text-gray-500">Waiting for delivery confirmation</p>
+                      <p className={`text-sm font-medium ${
+                        order.state === 'completed' ? 'text-gray-900' : 'text-gray-500'
+                      }`}>Confirmation</p>
+                      <p className="text-sm text-gray-500">
+                        {order.state === 'delivered_pending_confirm' && 'Waiting for your confirmation'}
+                        {order.state === 'completed' && 'Delivery confirmed and completed'}
+                        {order.state !== 'delivered_pending_confirm' && order.state !== 'completed' && 'Waiting for delivery confirmation'}
+                      </p>
                     </div>
                   </div>
                 </div>
