@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Users, Shield, CreditCard, MessageSquare, Truck, Star, Search, ArrowRight, Zap, Clock, CheckCircle, Sparkles } from 'lucide-react'
+import { Users, Shield, CreditCard, MessageSquare, Truck, Star, Search, ArrowRight, Zap, CheckCircle, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 export default function LandingPage() {
@@ -138,111 +138,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Problem/Solution Comparison */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              The Problem Students Face
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Buying and selling on campus is scattered, frustrating, and inefficient. Sound familiar?
-            </p>
-          </div>
-
-          {/* Before vs After Comparison */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Before - The Problem */}
-            <div className="space-y-6">
-              <div className="text-center lg:text-left">
-                <Badge className="bg-red-100 text-red-700 mb-4">❌ Before - The Scattered Mess</Badge>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">The Current Chaos</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Snapchat Stories</h4>
-                    <p className="text-gray-600 text-sm">Disappears in 24hrs, no search, screenshots required</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Search className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Instagram Posts</h4>
-                    <p className="text-gray-600 text-sm">Buried in personal feeds, impossible to find later</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <MessageSquare className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">GroupMe/Discord</h4>
-                    <p className="text-gray-600 text-sm">Messages get lost, no organization, spam-filled</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* After - The Solution */}
-            <div className="space-y-6">
-              <div className="text-center lg:text-left">
-                <Badge className="bg-green-100 text-green-700 mb-4">✅ After - The UIUC Way</Badge>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">One Platform, Everything</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-xl border border-green-100 hover:bg-green-100 transition-colors">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Search className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Smart Search</h4>
-                    <p className="text-gray-600 text-sm">Find exactly what you need instantly with filters</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-xl border border-green-100 hover:bg-green-100 transition-colors">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Secure Payments</h4>
-                    <p className="text-gray-600 text-sm">Escrow protection, no more Venmo trust issues</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 p-4 bg-green-50 rounded-xl border border-green-100 hover:bg-green-100 transition-colors">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <MessageSquare className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Built-in Chat</h4>
-                    <p className="text-gray-600 text-sm">Private messaging without sharing personal info</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <Link href="/auth/signin">
-                  <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 rounded-xl py-6 text-lg font-semibold">
-                    Join the Better Way
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="py-20 bg-gradient-to-br from-slate-900 to-purple-900 relative overflow-hidden">
