@@ -60,6 +60,9 @@ export default function Home() {
               <Link href="/profile">
                 <Button variant="outline">Profile</Button>
               </Link>
+              <Link href="/admin/auto-release">
+                <Button variant="outline">Admin</Button>
+              </Link>
               <span className="text-sm text-gray-700">
                 Welcome, {user.email}
               </span>
