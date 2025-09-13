@@ -17,7 +17,7 @@ export const createListingSchema = z.object({
   images: z.array(z.object({
     url: z.string().url(),
     path: z.string()
-  })).optional()
+  })).min(1, 'At least one image is required')
 }).refine((data) => {
   // If it's a rental, require rental fields
   if (data.is_rental) {

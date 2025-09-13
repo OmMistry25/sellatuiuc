@@ -485,7 +485,16 @@ export function CreateListingForm() {
 
               {/* Images */}
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Images *
+                </label>
                 <ImageUploader onImageUploaded={handleImageUploaded} maxImages={5} />
+                {errors.images && <p className="mt-1 text-sm text-red-600">{errors.images}</p>}
+                {images.length === 0 && (
+                  <p className="mt-1 text-sm text-gray-500">
+                    Upload at least one image of your item
+                  </p>
+                )}
               </div>
 
               {/* Ticket Metadata */}
@@ -591,7 +600,11 @@ export function CreateListingForm() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={loading}>
+                <Button 
+                  type="submit" 
+                  disabled={loading || images.length === 0}
+                  title={images.length === 0 ? 'Please upload at least one image' : ''}
+                >
                   {loading ? 'Creating...' : 'Create Listing'}
                 </Button>
               </div>
