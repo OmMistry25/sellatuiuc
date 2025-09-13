@@ -47,7 +47,7 @@ export async function markOrderAsDelivered(
 
     if (updateError) {
       console.error('Error updating order:', updateError)
-      return { error: 'Failed to update order' }
+      return { error: `Failed to update order: ${updateError.message}` }
     }
 
     // Create order event

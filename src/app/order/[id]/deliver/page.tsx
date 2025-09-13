@@ -130,7 +130,16 @@ export default function DeliverOrderPage() {
       }
 
       // Update order state using server action
+      console.log('Calling markOrderAsDelivered with:', {
+        orderId: order.id,
+        userId: user.id,
+        filePath,
+        deliveryNotes
+      })
+      
       const result = await markOrderAsDelivered(order.id, user.id, filePath, deliveryNotes)
+      
+      console.log('markOrderAsDelivered result:', result)
       
       if (result.error) {
         throw new Error(result.error)
