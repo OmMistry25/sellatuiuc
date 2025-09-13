@@ -327,6 +327,12 @@ export default function SellerOrdersPage() {
                           Mark as Delivered
                         </Button>
                       )}
+                      
+                      {order.state === 'delivered_pending_confirm' && (
+                        <div className="text-sm text-orange-600">
+                          Awaiting buyer confirmation
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
