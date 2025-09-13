@@ -277,58 +277,69 @@ export default function LandingPage() {
             </p>
           </div>
           
-          <div className="relative">
-            {/* Connection Line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-200 via-orange-400 to-red-400 transform -translate-y-1/2"></div>
+          <div className="relative max-w-5xl mx-auto">
+            {/* Connection Line - More precisely positioned */}
+            <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-1 bg-gradient-to-r from-orange-400 via-blue-400 via-green-400 to-purple-400 rounded-full"></div>
             
             <div className="grid lg:grid-cols-4 gap-8 relative">
               {/* Step 1 */}
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-orange-500/25 group-hover:scale-110 transition-transform">
-                    <span className="text-2xl font-bold text-white">1</span>
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-orange-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
+                    <span className="text-3xl font-bold text-white">1</span>
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-orange-500 rounded-full"></div>
+                  {/* Timeline dot */}
+                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-orange-500 rounded-full shadow-lg z-20"></div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Sign Up</h3>
-                <p className="text-gray-600">Use your .illinois.edu email. Takes 30 seconds.</p>
+                <p className="text-gray-600 leading-relaxed">Use your .illinois.edu email. Takes 30 seconds.</p>
               </div>
 
               {/* Step 2 */}
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/25 group-hover:scale-110 transition-transform">
-                    <span className="text-2xl font-bold text-white">2</span>
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
+                    <span className="text-3xl font-bold text-white">2</span>
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-blue-500 rounded-full"></div>
+                  {/* Timeline dot */}
+                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-blue-500 rounded-full shadow-lg z-20"></div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">List or Browse</h3>
-                <p className="text-gray-600">Post what you're selling or find what you need.</p>
+                <p className="text-gray-600 leading-relaxed">Post what you're selling or find what you need.</p>
               </div>
 
               {/* Step 3 */}
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-green-500/25 group-hover:scale-110 transition-transform">
-                    <span className="text-2xl font-bold text-white">3</span>
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-teal-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-green-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
+                    <span className="text-3xl font-bold text-white">3</span>
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-green-500 rounded-full"></div>
+                  {/* Timeline dot */}
+                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-green-500 rounded-full shadow-lg z-20"></div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Chat & Pay</h3>
-                <p className="text-gray-600">Message securely, pay with protection.</p>
+                <p className="text-gray-600 leading-relaxed">Message securely, pay with protection.</p>
               </div>
 
               {/* Step 4 */}
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-purple-500/25 group-hover:scale-110 transition-transform">
-                    <CheckCircle className="w-8 h-8 text-white" />
+              <div className="text-center group relative">
+                <div className="relative mb-8">
+                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-purple-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
+                    <CheckCircle className="w-10 h-10 text-white" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-purple-500 rounded-full"></div>
+                  {/* Timeline dot */}
+                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-purple-500 rounded-full shadow-lg z-20"></div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Done!</h3>
-                <p className="text-gray-600">Get your item, leave a review, repeat.</p>
+                <p className="text-gray-600 leading-relaxed">Get your item, leave a review, repeat.</p>
               </div>
+            </div>
+
+            {/* Mobile Timeline - Vertical */}
+            <div className="lg:hidden flex flex-col items-center space-y-8 mt-12">
+              <div className="w-1 h-16 bg-gradient-to-b from-orange-400 to-blue-400 rounded-full"></div>
+              <div className="w-1 h-16 bg-gradient-to-b from-blue-400 to-green-400 rounded-full"></div>
+              <div className="w-1 h-16 bg-gradient-to-b from-green-400 to-purple-400 rounded-full"></div>
             </div>
           </div>
 
