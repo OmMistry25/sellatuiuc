@@ -11,6 +11,7 @@ export default function LandingPage() {
   const [searchText, setSearchText] = useState('')
   const [currentSearchIndex, setCurrentSearchIndex] = useState(0)
   const searchExamples = ['iclickers', 'football game tix', 'textbook rentals', 'lab glasses']
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,13 +36,18 @@ export default function LandingPage() {
     return () => clearInterval(interval)
   }, [currentSearchIndex])
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 via-slate-800 to-gray-900 relative">
+      {/* Extended background to cover entire page */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900 via-slate-800 to-gray-900 -z-10"></div>
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-40 right-1/3 w-60 h-60 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        <div className="absolute top-1/2 right-10 w-60 h-60 bg-purple-500/15 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-3000"></div>
+        <div className="absolute bottom-10 -right-20 w-72 h-72 bg-pink-500/15 rounded-full blur-3xl animate-pulse delay-4000"></div>
       </div>
 
       {/* Navigation */}
@@ -266,102 +272,80 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gradient-to-br from-white to-gray-50">
+      <section className="py-20 bg-gradient-to-br from-slate-800/50 to-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
               Dead Simple Process
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               From signup to sale in minutes. No complicated steps, no weird requirements.
             </p>
           </div>
           
-          <div className="relative max-w-5xl mx-auto">
-            {/* Connection Line - More precisely positioned */}
-            <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-1 bg-gradient-to-r from-orange-400 via-blue-400 via-green-400 to-purple-400 rounded-full"></div>
+          <div className="relative">
+            {/* Simple progress line */}
+            <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5 bg-gray-600"></div>
+            <div className="hidden lg:block absolute top-10 left-[12.5%] w-3/4 h-0.5 bg-gradient-to-r from-orange-400 via-blue-400 via-green-400 to-purple-400"></div>
             
             <div className="grid lg:grid-cols-4 gap-8 relative">
               {/* Step 1 */}
-              <div className="text-center group relative">
-                <div className="relative mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-orange-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
-                    <span className="text-3xl font-bold text-white">1</span>
-                  </div>
-                  {/* Timeline dot */}
-                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-orange-500 rounded-full shadow-lg z-20"></div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-all duration-500">
+                  <span className="text-2xl font-bold text-white">1</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Sign Up</h3>
-                <p className="text-gray-600 leading-relaxed">Use your .illinois.edu email. Takes 30 seconds.</p>
+                <h3 className="text-xl font-bold text-white mb-3 mt-6">Sign Up</h3>
+                <p className="text-gray-300">Use your .illinois.edu email. Takes 30 seconds.</p>
               </div>
 
               {/* Step 2 */}
-              <div className="text-center group relative">
-                <div className="relative mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
-                    <span className="text-3xl font-bold text-white">2</span>
-                  </div>
-                  {/* Timeline dot */}
-                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-blue-500 rounded-full shadow-lg z-20"></div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-all duration-500">
+                  <span className="text-2xl font-bold text-white">2</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">List or Browse</h3>
-                <p className="text-gray-600 leading-relaxed">Post what you're selling or find what you need.</p>
+                <h3 className="text-xl font-bold text-white mb-3 mt-6">List or Browse</h3>
+                <p className="text-gray-300">Post what you're selling or find what you need.</p>
               </div>
 
               {/* Step 3 */}
-              <div className="text-center group relative">
-                <div className="relative mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-teal-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-green-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
-                    <span className="text-3xl font-bold text-white">3</span>
-                  </div>
-                  {/* Timeline dot */}
-                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-green-500 rounded-full shadow-lg z-20"></div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-3xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-all duration-500">
+                  <span className="text-2xl font-bold text-white">3</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Chat & Pay</h3>
-                <p className="text-gray-600 leading-relaxed">Message securely, pay with protection.</p>
+                <h3 className="text-xl font-bold text-white mb-3 mt-6">Chat & Pay</h3>
+                <p className="text-gray-300">Message securely, pay with protection.</p>
               </div>
 
               {/* Step 4 */}
-              <div className="text-center group relative">
-                <div className="relative mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-purple-500/30 group-hover:scale-110 transition-all duration-300 relative z-10">
-                    <CheckCircle className="w-10 h-10 text-white" />
-                  </div>
-                  {/* Timeline dot */}
-                  <div className="hidden lg:block absolute top-[48px] left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-purple-500 rounded-full shadow-lg z-20"></div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-all duration-500">
+                  <CheckCircle className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Done!</h3>
-                <p className="text-gray-600 leading-relaxed">Get your item, leave a review, repeat.</p>
+                <h3 className="text-xl font-bold text-white mb-3 mt-6">Done!</h3>
+                <p className="text-gray-300">Get your item, leave a review, repeat.</p>
               </div>
-            </div>
-
-            {/* Mobile Timeline - Vertical */}
-            <div className="lg:hidden flex flex-col items-center space-y-8 mt-12">
-              <div className="w-1 h-16 bg-gradient-to-b from-orange-400 to-blue-400 rounded-full"></div>
-              <div className="w-1 h-16 bg-gradient-to-b from-blue-400 to-green-400 rounded-full"></div>
-              <div className="w-1 h-16 bg-gradient-to-b from-green-400 to-purple-400 rounded-full"></div>
             </div>
           </div>
 
           {/* Social Proof */}
           <div className="mt-16 text-center">
-            <p className="text-gray-600 mb-8">Join hundreds of UIUC students already trading smart</p>
+            <p className="text-gray-300 mb-8">Join hundreds of UIUC students already trading smart</p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
               <div className="flex -space-x-2">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-bold">
+                  <div key={i} className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full border-2 border-gray-600 flex items-center justify-center text-white text-sm font-bold">
                     {String.fromCharCode(65 + i)}
                   </div>
                 ))}
               </div>
-              <div className="text-sm text-gray-500">+495 more students</div>
+              <div className="text-sm text-gray-400">+495 more students</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-orange-600/90 via-red-600/90 to-pink-600/90 backdrop-blur-sm relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute top-0 left-0 w-full h-full">
