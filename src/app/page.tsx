@@ -91,15 +91,15 @@ export default function LandingPage() {
           {/* Interactive Search Demo */}
           <div className="mb-12 max-w-lg mx-auto">
             <div className="relative">
-              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 value={searchText}
                 readOnly
                 placeholder="Search for anything..."
-                className="w-full pl-14 pr-16 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium tracking-wide"
+                className="w-full pl-12 pr-12 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium tracking-wide"
               />
-              <div className="absolute right-5 top-1/2 transform -translate-y-1/2">
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                 <div className="w-2 h-6 bg-orange-500 animate-pulse rounded"></div>
               </div>
             </div>
