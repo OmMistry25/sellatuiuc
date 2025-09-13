@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Users, Shield, CreditCard, MessageSquare, Truck, Star, Search, ArrowRight, Zap, Clock, CheckCircle, TrendingUp, Heart, Sparkles } from 'lucide-react'
+import { Users, Shield, CreditCard, MessageSquare, Truck, Star, Search, ArrowRight, Zap, Clock, CheckCircle, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 export default function LandingPage() {
@@ -72,136 +72,67 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative z-10 pt-20 pb-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column - Content */}
-            <div className="text-center lg:text-left">
-              <Badge className="mb-6 bg-gradient-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-500/30">
-                <Zap className="w-4 h-4 mr-2" />
-                🎓 For UIUC Students Only
-              </Badge>
-              
-              <h1 className="text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
-                Where UIUC 
-                <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"> Buys & Sells</span>
-              </h1>
-              
-              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Finally, one place for everything. No more hunting through Snapchat stories or random group chats. 
-                <strong className="text-white"> Your campus marketplace, done right.</strong>
-              </p>
+        <div className="max-w-6xl mx-auto text-center">
+          <Badge className="mb-8 bg-gradient-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-500/30 inline-flex items-center">
+            <Zap className="w-4 h-4 mr-2" />
+            🎓 For UIUC Students Only
+          </Badge>
+          
+          <h1 className="text-5xl lg:text-7xl font-extrabold text-white mb-8 leading-tight">
+            Where UIUC 
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"> Buys & Sells</span>
+          </h1>
+          
+          <p className="text-xl lg:text-2xl text-gray-300 mb-12 leading-relaxed max-w-4xl mx-auto">
+            Finally, one place for everything. No more hunting through Snapchat stories or random group chats. 
+            <strong className="text-white"> Your campus marketplace, done right.</strong>
+          </p>
 
-              {/* Interactive Search Demo */}
-              <div className="mb-8 max-w-md mx-auto lg:mx-0">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    value={searchText}
-                    readOnly
-                    placeholder="Search for anything..."
-                    className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                    <div className="w-2 h-6 bg-orange-500 animate-pulse rounded"></div>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-400 mt-2">Try searching for: textbooks, furniture, electronics...</p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link href="/auth/signin">
-                  <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 rounded-2xl px-8 py-6 text-lg font-semibold shadow-2xl shadow-orange-500/25">
-                    Start Selling Today
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-                <Link href="/listings">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 rounded-2xl px-8 py-6 text-lg font-semibold backdrop-blur-md">
-                    Browse Listings
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Stats */}
-              <div className="flex justify-center lg:justify-start items-center space-x-8 mt-12">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">500+</div>
-                  <div className="text-sm text-gray-400">Students</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">1.2k+</div>
-                  <div className="text-sm text-gray-400">Items Sold</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">4.9★</div>
-                  <div className="text-sm text-gray-400">Rating</div>
-                </div>
+          {/* Interactive Search Demo */}
+          <div className="mb-12 max-w-lg mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                value={searchText}
+                readOnly
+                placeholder="Search for anything..."
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                <div className="w-2 h-6 bg-orange-500 animate-pulse rounded"></div>
               </div>
             </div>
+            <p className="text-sm text-gray-400 mt-3 text-center">Try searching for: textbooks, furniture, electronics...</p>
+          </div>
 
-            {/* Right Column - Interactive Preview */}
-            <div className="relative">
-              {/* Phone Mockup */}
-              <div className="relative mx-auto w-72 h-[600px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-[3rem] p-2 shadow-2xl">
-                <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                  {/* Phone Screen Content */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-red-50">
-                    {/* Status Bar */}
-                    <div className="h-12 bg-white/90 backdrop-blur-md flex items-center justify-between px-6 text-sm font-medium">
-                      <span>9:41</span>
-                      <span>UIUC Marketplace</span>
-                      <div className="flex space-x-1">
-                        <div className="w-4 h-2 bg-green-500 rounded"></div>
-                      </div>
-                    </div>
-                    
-                    {/* Mock Listings */}
-                    <div className="p-4 space-y-3 mt-2">
-                      <div className="bg-white rounded-xl p-3 shadow-sm border animate-pulse">
-                        <div className="flex space-x-3">
-                          <div className="w-16 h-16 bg-orange-200 rounded-lg"></div>
-                          <div className="flex-1">
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-                            <div className="h-3 bg-orange-200 rounded w-1/4"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white rounded-xl p-3 shadow-sm border animate-pulse delay-300">
-                        <div className="flex space-x-3">
-                          <div className="w-16 h-16 bg-blue-200 rounded-lg"></div>
-                          <div className="flex-1">
-                            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/3 mb-1"></div>
-                            <div className="h-3 bg-blue-200 rounded w-1/5"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white rounded-xl p-3 shadow-sm border animate-pulse delay-700">
-                        <div className="flex space-x-3">
-                          <div className="w-16 h-16 bg-green-200 rounded-lg"></div>
-                          <div className="flex-1">
-                            <div className="h-4 bg-gray-200 rounded w-4/5 mb-2"></div>
-                            <div className="h-3 bg-gray-200 rounded w-2/5 mb-1"></div>
-                            <div className="h-3 bg-green-200 rounded w-1/3"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Floating Elements */}
-              <div className="absolute -top-6 -left-6 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center animate-bounce">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <div className="absolute -bottom-6 -right-6 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center animate-bounce delay-1000">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+            <Link href="/auth/signin">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 rounded-2xl px-10 py-6 text-lg font-semibold shadow-2xl shadow-orange-500/25">
+                Start Selling Today
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/listings">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 rounded-2xl px-10 py-6 text-lg font-semibold backdrop-blur-md">
+                Browse Listings
+              </Button>
+            </Link>
+          </div>
+
+          {/* Stats */}
+          <div className="flex justify-center items-center space-x-12">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white">500+</div>
+              <div className="text-sm text-gray-400">Students</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white">1.2k+</div>
+              <div className="text-sm text-gray-400">Items Sold</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-white">4.9★</div>
+              <div className="text-sm text-gray-400">Rating</div>
             </div>
           </div>
         </div>
@@ -509,7 +440,7 @@ export default function LandingPage() {
           {/* Social Proof */}
           <div className="mt-16 text-center">
             <p className="text-gray-600 mb-8">Join hundreds of UIUC students already trading smart</p>
-            <div className="flex justify-center items-center space-x-8">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
               <div className="flex -space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-bold">
@@ -555,7 +486,7 @@ export default function LandingPage() {
             </Link>
           </div>
           
-          <div className="mt-12 flex justify-center items-center space-x-8 text-orange-200">
+          <div className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-6 text-orange-200">
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-5 h-5" />
               <span>Free to join</span>
