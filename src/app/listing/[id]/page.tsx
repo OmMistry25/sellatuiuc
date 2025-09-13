@@ -180,8 +180,12 @@ export default function ListingDetailPage() {
   const handlePaymentClick = async () => {
     if (!user || !order) return
 
-    // Redirect to checkout page
-    router.push(`/checkout/${order.id}`)
+    // Redirect to appropriate checkout page based on listing type
+    if (listing.is_rental) {
+      router.push(`/checkout/rental/${order.id}`)
+    } else {
+      router.push(`/checkout/${order.id}`)
+    }
   }
 
   if (loading) {

@@ -42,6 +42,21 @@ export async function createOrder(listingId: string, userId: string) {
     return { error: 'You already have an active order for this item' }
   }
 
+  // Calculate pricing based on listing type
+  let subtotal_cents: number
+  let deposit_cents: number | null = null
+  
+  if (listing.is_rental) {
+    // For rentals, use minimum rental period for initial calculation
+    // The actual rental period will be determined during checkout
+    const minDays = listing.rental_min_days || 1
+    subtotal_cents = (listing.rental_day_price_cents || 0) * minDays
+    deposit_cents = listing.rental_deposit_cents || 0
+  } else {
+    // For sales, use the sale price
+    subtotal_cents = listing.price_cents || 0
+  }
+
   // Create the order
   const { data: order, error: orderError } = await adminSupabase
     .from('orders')
@@ -51,9 +66,10 @@ export async function createOrder(listingId: string, userId: string) {
       seller_id: listing.seller_id,
       type: listing.is_rental ? 'rent' : 'buy',
       quantity: 1,
-      subtotal_cents: listing.price_cents,
+      subtotal_cents: subtotal_cents,
+      deposit_cents: deposit_cents,
       fees_cents: 0, // TODO: Calculate fees
-      total_cents: listing.price_cents,
+      total_cents: subtotal_cents + (deposit_cents || 0),
       state: 'initiated',
       delivery_method: listing.delivery_methods[0] || 'in_person',
       created_by: userId
